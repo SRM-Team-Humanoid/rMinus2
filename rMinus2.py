@@ -112,6 +112,10 @@ class Motion(object):
         frames = []
         ids = []
         for k in endpos.keys():
+            try:
+                begpos[k]
+            except:
+                begpos[k]=0
             if begpos[k]!=endpos[k] and k not in exclude:
                 frames.append(np.linspace(begpos[k],endpos[k],self.delay))
                 ids.append(k)
@@ -182,28 +186,32 @@ if __name__=='__main__':
     hand = {5: 60, 6: -60}
     offsets = [darwin, abmath, hand]
     offsets = [darwin, hand]
-    dxl = Dxl(lock=18)
+    dxl = Dxl(lock=20)
     tree = XmlTree('data2.xml')
     tree2 = XmlTree('DRIBLE.xml')
     biotree = XmlTree('Bioloid.mtnx')
+    read_tree= XmlTree('btest1.xml')
     walk = Action(tree.superparsexml("22 F_S_L",offsets=[darwin]))
     gangnam = Action(biotree.superparsexml("1 start1",offsets=[darwin,hand]))
     balance = MotionSet(tree.parsexml("152 Balance"), offsets=[darwin,hand])
     moon_walk = Action(tree2.superparsexml("11 B_L_S", offsets=[darwin]))
     lback = MotionSet(tree2.parsexml("18 B_L_E"), offsets=[darwin])
     rback = MotionSet(tree2.parsexml("17 B_R_E"), offsets=[darwin])
+    btest = MotionSet(read_tree.parsexml("Back"))
     state = dxl.getPos()
     print state
     raw_input("Proceed?")
     balance.execute()
     raw_input("Sure?")
+    btest.execute(speed=0.4)
     #gangnam.execute(speed=1)
     #haat.execute(speed=0.5)
-    walk.execute()
+    #moon_walk.execute(iter=10,speed=0.5)
     #moon_walk.execute(5,speed=0.8)
-    # for _ in range(10):
-    #     lback.execute(speed=2)
-    #     rback.execute(speed=2)
+    for _ in range(10):
+        btest.execute(speed=0.5)
+        balance.execute()
+        #rback.execute(speed=1)
 
     '''
     #state = dxl.getPos()
