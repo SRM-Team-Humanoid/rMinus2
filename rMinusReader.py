@@ -41,7 +41,7 @@ class Dxl(object):
 
 
 
-body = {"lhand":[2,4,6],"rhand":[1,3,5],"lleg":[8,10,12,14,16,18],"rleg":[7,9,11,13,15,17],"torso":range(1,7),"bottom":range(8,19),"body":range(1,21)}
+body = {"lhand":[2,4,6],"rhand":[1,3,5],"lleg":[10,12,14,15,16,17,18],"rleg":[9,11,13,15,16,17,18],"torso":range(1,7),"bottom":range(8,19),"body":range(1,21)}
 
 root = ET.Element("root")
 pageroot = ET.SubElement(root, "PageRoot")
