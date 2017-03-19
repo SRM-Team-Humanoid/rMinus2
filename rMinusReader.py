@@ -55,7 +55,7 @@ else:
 body = {"lhand":[2,4,6],"rhand":[1,3,5],"lleg":[10,12,14,15,16,17,18],"rleg":[9,11,13,15,16,17,18],"torso":range(1,7),"bottom":range(8,19),"body":range(1,21)}
 
 
-#dxl = Dxl(lock=20)
+dxl = Dxl(lock=20)
 
 pagename = raw_input("Page name: ")
 page = ET.SubElement(pageroot, "Page", name=pagename)
@@ -64,11 +64,11 @@ while True:
     tor = raw_input("Enter(d/e/x) - ")
     if tor == 'd':
         limb = raw_input()
-        #dxl.torque_off(body[limb])
+        dxl.torque_off(body[limb])
     elif tor == 'e':
         Frame = raw_input("Frame: ")
-        #dxl.torque_on(body["body"])
-        #angles = dxl.getPosString()
+        dxl.torque_on(body["body"])
+        angles = dxl.getPosString()
 	angles = '1 2 3 4'
 	step = ET.SubElement(steps,"step", frame=Frame, pose=angles)
     elif tor == 'x':
