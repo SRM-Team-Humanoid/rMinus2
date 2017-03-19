@@ -69,7 +69,6 @@ while True:
         Frame = raw_input("Frame: ")
         dxl.torque_on(body["body"])
         angles = dxl.getPosString()
-	angles = '1 2 3 4'
 	step = ET.SubElement(steps,"step", frame=Frame, pose=angles)
     elif tor == 'x':
         break
