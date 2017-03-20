@@ -203,17 +203,18 @@ if __name__=='__main__':
     raw_input("Proceed?")
     balance.execute()
     raw_input("Sure?")
-    btest.execute(speed=0.4)
+    #btest.execute(speed=0.4)
     #gangnam.execute(speed=1)
     #haat.execute(speed=0.5)
     #moon_walk.execute(iter=10,speed=0.5)
     #moon_walk.execute(5,speed=0.8)
+    '''
     for _ in range(10):
         btest.execute(speed=0.5)
         balance.execute()
         #rback.execute(speed=1)
 
-    '''
+    
     #state = dxl.getPos()
 
     balance = MotionSet(tree.parsexml("152 Balance"),offsets=offsets)
