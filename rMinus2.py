@@ -187,101 +187,97 @@ if __name__=='__main__':
     offsets = [darwin, abmath, hand]
     offsets = [darwin, hand]
     dxl = Dxl(lock=20)
-    tree = XmlTree('data2.xml')
-    tree2 = XmlTree('DRIBLE.xml')
-    biotree = XmlTree('Bioloid.mtnx')
-    read_tree= XmlTree('btest1.xml')
-    walk = Action(tree.superparsexml("22 F_S_L",offsets=[darwin]))
-    gangnam = Action(biotree.superparsexml("1 start1",offsets=[darwin,hand]))
+    tree = XmlTree('data.xml')
+    tree2 = XmlTree('soccer.xml')
+    #walk = Action(tree.superparsexml("22 F_S_L",offsets=[darwin]))
     balance = MotionSet(tree.parsexml("152 Balance"), offsets=[darwin,hand])
     moon_walk = Action(tree2.superparsexml("11 B_L_S", offsets=[darwin]))
     lback = MotionSet(tree2.parsexml("18 B_L_E"), offsets=[darwin])
     rback = MotionSet(tree2.parsexml("17 B_R_E"), offsets=[darwin])
-    btest = MotionSet(read_tree.parsexml("Back"))
     state = dxl.getPos()
     print state
     raw_input("Proceed?")
     balance.execute()
     raw_input("Sure?")
-    btest.execute(speed=0.4)
+    l_step = MotionSet(tree2.parsexml("10 ff_l_r"), speed=1.5, offsets=[darwin])
+    r_step = MotionSet(tree2.parsexml("9 ff_r_l"), speed=1.5, offsets=[darwin])
+    boom_walk = Action([l_step, r_step])
+    boom_walk.execute(10, speed=1)
     #gangnam.execute(speed=1)
     #haat.execute(speed=0.5)
     #moon_walk.execute(iter=10,speed=0.5)
     #moon_walk.execute(5,speed=0.8)
-    for _ in range(10):
-        btest.execute(speed=0.5)
-        balance.execute()
         #rback.execute(speed=1)
 
-    '''
-    #state = dxl.getPos()
-
-    balance = MotionSet(tree.parsexml("152 Balance"),offsets=offsets)
-    l_attack = MotionSet(tree.parsexml("21 L attack"),speed=1.2,offsets=offsets)
-    kick = MotionSet(tree.parsexml("18 L kick"),speed=2,offsets=offsets)
-    f_getup = MotionSet(tree.parsexml("27 F getup"),speed=2.7,offsets=offsets)
-    b_getup = MotionSet(tree.parsexml("28 B getup  "),speed=1.5,offsets=offsets)
-    r_inv = MotionSet(tree2.parsexml("19 RFT"),speed=1.2,offsets=offsets)
-    l_inv = MotionSet(tree2.parsexml("20 LFT"),speed=1.2,offsets=offsets)
-    r_turn = MotionSet(tree2.parsexml("27 RT"),speed=1.2,offsets=offsets)
-    l_turn = MotionSet(tree2.parsexml("28 LT"),speed=1.2,offsets=offsets)
-
-    #walk goes in superclass
-
+    #
+    # #state = dxl.getPos()
+    #
+    # balance = MotionSet(tree.parsexml("152 Balance"),offsets=offsets)
+    # l_attack = MotionSet(tree.parsexml("21 L attack"),speed=1.2,offsets=offsets)
+    # kick = MotionSet(tree.parsexml("18 L kick"),speed=2,offsets=offsets)
+    # f_getup = MotionSet(tree.parsexml("27 F getup"),speed=2.7,offsets=offsets)
+    # b_getup = MotionSet(tree.parsexml("28 B getup  "),speed=1.5,offsets=offsets)
+    # r_inv = MotionSet(tree2.parsexml("19 RFT"),speed=1.2,offsets=offsets)
+    # l_inv = MotionSet(tree2.parsexml("20 LFT"),speed=1.2,offsets=offsets)
+    # r_turn = MotionSet(tree2.parsexml("27 RT"),speed=1.2,offsets=offsets)
+    # l_turn = MotionSet(tree2.parsexml("28 LT"),speed=1.2,offsets=offsets)
+    #
+    # #walk goes in superclass
+    #
     w1 = MotionSet(tree.parsexml("32 F_S_L"),speed=2.1,offsets=offsets)
     w2 = MotionSet(tree.parsexml("33 "),speed=2.1,offsets=offsets)
     w3 = MotionSet(tree.parsexml("38 F_M_R"),speed=2.7,offsets=offsets)
     w4 = MotionSet(tree.parsexml("39 "),speed=2.1,offsets=offsets)
     w5 = MotionSet(tree.parsexml("36 F_M_L"),speed=2.7,offsets=offsets)
     w6 = MotionSet(tree.parsexml("37 "),speed=2.1,offsets=offsets)
-
-    l_step = MotionSet(tree2.parsexml("10 ff_l_r"), speed=1.5, offsets=offsets2)
-    r_step = MotionSet(tree2.parsexml("9 ff_r_l"), speed=1.5, offsets=offsets2)
-    balance2 = MotionSet(tree.parsexml("152 Balance"), offsets=offsets2)
+    #
+    l_step = MotionSet(tree2.parsexml("10 ff_l_r"), speed=1.5, offsets=[darwin])
+    r_step = MotionSet(tree2.parsexml("9 ff_r_l"), speed=1.5, offsets=[darwin])
+    # balance2 = MotionSet(tree.parsexml("152 Balance"), offsets=offsets2)
     boom_walk = Action([l_step,r_step])
-
-    #print state
-
+    #
+    # #print state
+    #
     walk_init = Action([w1,w2])
     walk_motion = Action([w3,w4,w5,w6])
-
-    balance2.execute()
+    #
+    # balance2.execute()
     x = raw_input("Proceed (y/n)?")
-    prev =''
+    # prev =''
     if x == 'y':
-        boom_walk.execute(10,speed=1.4)
+        boom_walk.execute(10,speed=1)
         #walk_init.execute(speed=2)
         #walk_motion.execute(10,speed=2)
-        balance2.execute()
-
-        while True:
-            x = raw_input()
-            if x=='l':
-                l_turn.execute()
-                prev = ''
-            if x=='w' and prev =='w':
-                walk_motion.execute()
-                prev = 'w'
-            elif x=='w':
-                walk_init.execute()
-                walk_motion.execute()
-                prev = 'w'
-            elif x=='r':
-                r_turn.execute()
-                prev = ''
-            elif x=='a':
-                l_inv.execute()
-                prev = ''
-            elif x=='d':
-                r_inv.execute()
-                prev = ''
-            elif x=='k':
-                kick.execute()
-                prev = ''
-            '''
-
-
-
-
-
-
+    #     balance2.execute()
+    #
+    #     while True:
+    #         x = raw_input()
+    #         if x=='l':
+    #             l_turn.execute()
+    #             prev = ''
+    #         if x=='w' and prev =='w':
+    #             walk_motion.execute()
+    #             prev = 'w'
+    #         elif x=='w':
+    #             walk_init.execute()
+    #             walk_motion.execute()
+    #             prev = 'w'
+    #         elif x=='r':
+    #             r_turn.execute()
+    #             prev = ''
+    #         elif x=='a':
+    #             l_inv.execute()
+    #             prev = ''
+    #         elif x=='d':
+    #             r_inv.execute()
+    #             prev = ''
+    #         elif x=='k':
+    #             kick.execute()
+    #             prev = ''
+    #
+    #
+    #
+    #
+    #
+    #
+    #
