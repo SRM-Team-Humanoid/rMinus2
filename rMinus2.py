@@ -7,6 +7,7 @@ import xml.etree.cElementTree as ET
 from collections import Counter
 from copy import deepcopy
 from readchar import readchar
+
 class Dxl(object):
     def __init__(self,port_id=0, scan_limit=25, lock=-1):
         # Initializes Dynamixel Object
@@ -44,7 +45,8 @@ class Dxl(object):
 
 class XmlTree(object):
 
-    def __init__(self,str):
+    def __init__(self,str,dxl):
+        self.dxl = dxl
         try:
             with open(str) as f:
                 pass
@@ -61,7 +63,7 @@ class XmlTree(object):
             print find
             raise RuntimeError("ParseFail!")
         for step in steps:
-            motion = Motion(step.attrib['frame'], step.attrib['pose'], prev_frame)
+            motion = Motion(step.attrib['frame'], step.attrib['pose'], prev_frame,dxl=self.dxl)
             prev_frame = step.attrib['frame']
             motions.append(motion)
 
@@ -82,10 +84,11 @@ class XmlTree(object):
 
 
 class Motion(object):
-    def __init__(self,frame,pose,prev_frame):
+    def __init__(self,frame,pose,prev_frame,dxl=False):
         self.frame = int(frame)
         self.pose = {}
         self.delay = self.frame-int(prev_frame)
+        self.dxl = dxl
         for i,p in enumerate(pose.split()):
             self.pose[i+1] =float(p)
 
@@ -108,6 +111,8 @@ class Motion(object):
 
 
     def write(self,state, speed,exclude=[],offset={}):
+        if not self.dxl:
+            raise RuntimeError("No Dxl Error")
         begpos = state.pose
         endpos = self.pose
         frames = []
@@ -124,7 +129,7 @@ class Motion(object):
         frames = zip(*frames)
         for f in frames:
             writ = dict(zip(ids, f))
-            dxl.setPos(writ)
+            self.dxl.setPos(writ)
             time.sleep(0.008 / speed)
             print writ
 
@@ -144,8 +149,9 @@ class MotionSet(object):
     def setSpeed(self,speed):
         self.speed = speed
 
-    def execute(self,speed=-1,iter=1):
-        global state
+    def execute(self,speed=-1,iter=1,state=False):
+        if not state:
+            raise RuntimeError("No State Error")
         if speed<0:
             speed = self.speed
         if not self.loaded:
@@ -157,7 +163,8 @@ class MotionSet(object):
         while iter>0:
             for motion in self.motions:
                 motion.write(state,speed,self.exclude)
-                state = deepcopy(motion)
+                #state = deepcopy(motion)
+                state = motion
             iter-=1
 
 class Action():
@@ -167,24 +174,18 @@ class Action():
     def add(self,motionsets):
         self.motionsets.extend(motionsets)
 
-    def execute(self,iter=1,speed=1):
+    def execute(self,iter=1,speed=1,state=False):
+        if not state:
+            raise RuntimeError("No State Error")
         while iter>0:
             for motionset in self.motionsets:
                 for m in motionset.motions:
                     print m
                 orig = motionset.speed
                 motionset.speed = motionset.speed*speed
-                motionset.execute()
+                motionset.execute(state=state)
                 motionset.speed = orig
             iter -= 1
-
-state =[]
-dxl =[]
-
-def initialize(dx,st):
-    global state,dxl
-    state = st
-    dxl = dx
 
 
 
