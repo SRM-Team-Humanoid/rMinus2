@@ -8,7 +8,7 @@ from collections import Counter
 from copy import deepcopy
 #from readchar import readchar
 class Dxl(object):
-    def __init__(self,port_id=0, scan_limit=25, lock=-1):
+    def __init__(self,port_id=0, scan_limit=25, lock=-1,debug=False):
         # Initializes Dynamixel Object
         # Port ID is zero by default
         ports = pypot.dynamixel.get_available_ports()
@@ -27,6 +27,9 @@ class Dxl(object):
 
         self.dxl_io = dxl_io
         self.ids = ids
+        speeds = [50 for x in ids]
+        if debug:
+            dxl_io.set_moving_speed(dict(zip(ids,speeds)))
     def setPos(self,pose):
         '''
         for k in pose.keys():
@@ -186,7 +189,7 @@ hand = {5: 60, 6: -60}
 tree = XmlTree('data.xml')
 tree2 = XmlTree('soccer.xml')
 walk = Action(tree.superparsexml("22 F_S_L",offsets=[darwin]))
-balance = MotionSet(tree.parsexml("152 Balance"), offsets=[darwin,hand])
+balance = MotionSet(tree.parsexml("152 Balance"), offsets=[darwin,])
 moon_walk = Action(tree2.superparsexml("11 B_L_S", offsets=[darwin]))
 lback = MotionSet(tree2.parsexml("18 B_L_E"), offsets=[darwin])
 rback = MotionSet(tree2.parsexml("17 B_R_E"), offsets=[darwin])
@@ -201,9 +204,10 @@ bl2 = MotionSet(tree.parsexml("53 "), offsets=[darwin])
 br1 = MotionSet(tree.parsexml("54 B_E_R"), offsets=[darwin])
 br2 = MotionSet(tree.parsexml("55 "), offsets=[darwin])
 
-
 l_step = MotionSet(tree2.parsexml("10 ff_l_r"), speed=1.5, offsets=[darwin])
 r_step = MotionSet(tree2.parsexml("9 ff_r_l"), speed=1.5, offsets=[darwin])
+l_step2 = MotionSet(tree2.parsexml("10 ff_l_r"), speed=1.5, offsets=[darwin])
+r_step2 = MotionSet(tree2.parsexml("9 ff_r_l"), speed=1.5, offsets=[darwin])
 l_attack = MotionSet(tree.parsexml("21 L attack"),speed=1.2,offsets=[darwin])
 kick = MotionSet(tree.parsexml("18 L kick"),speed=2,offsets=[darwin])
 f_getup = MotionSet(tree.parsexml("27 F getup"),speed=2.7,offsets=[darwin])
@@ -226,7 +230,30 @@ b4 = MotionSet(tree.parsexml("49 "),speed=2.1,offsets=[darwin])
 b5 = MotionSet(tree.parsexml("50 B_M_R"),speed=2.1,offsets=[darwin])
 b6 = MotionSet(tree.parsexml("51 "),speed=2.1,offsets=[darwin])
 
+fr1 = MotionSet(tree.parsexml("118 FRT_S_R"),speed = 2.1,offsets=[darwin])
+fr2 = MotionSet(tree.parsexml("119 "),speed=2.1,offsets=[darwin])
+fr3 = MotionSet(tree.parsexml("120 FRT_M_L"),speed=2.7,offsets=[darwin])
+fr4 = MotionSet(tree.parsexml("121 "),speed=2.7,offsets=[darwin])
+fr5 = MotionSet(tree.parsexml("122 FRT_M_R"),speed=2.7,offsets=[darwin])
+fr6 = MotionSet(tree.parsexml("123 "),speed=2.7,offsets=[darwin])
+
+front_right_init = Action([fr1,fr2])
+front_right_motion = Action([fr3,fr4,fr5,fr6])
+
+ls1 = MotionSet(tree.parsexml("80 L_S_L"),speed=2.1,offsets=[darwin])
+ls2 = MotionSet(tree.parsexml("81 "),speed=2.1,offsets=[darwin])
+ls3 = MotionSet(tree.parsexml("86 L_M_R"),speed=2.7,offsets=[darwin])
+ls4 = MotionSet(tree.parsexml("87 "),speed=2.7,offsets=[darwin])
+ls5 = MotionSet(tree.parsexml("84 L_M_L"),speed=2.7,offsets=[darwin])
+ls6 = MotionSet(tree.parsexml("85 "),speed=2.7,offsets=[darwin])
+
+l_side_init = Action([ls1,ls2])
+l_side_motion = Action([ls3,ls4,ls5,ls6])
+
+
+
 boom_walk = Action([l_step,r_step])
+boom_walk2 = Action([l_step2,r_step2])
 bwalk_init = Action([bls1])
 bwalk_motion = Action([bls2,bls3])
 
@@ -243,8 +270,10 @@ if __name__=='__main__':
     print state
     raw_input("Proceed?")
     balance.execute()
-    raw_input("Sure?")
-    #boom_walk.execute(iter=5,speed=1.1)
-    bwalk_init.execute(iter=1,speed=1.1)
-    bwalk_motion.execute(iter=10,speed=1.1)
-    #bwalk.execute(iter=5,speed=1.1)
+    raw_input("Go?")
+    # l_side_init.execute()
+    # l_side_motion.execute(iter=5,speed=2)
+    front_right_init.execute()
+    front_right_motion.execute(iter=5,speed=2)
+
+
