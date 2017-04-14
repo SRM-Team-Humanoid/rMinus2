@@ -86,7 +86,7 @@ class XmlTree(object):
             raise RuntimeError("ParseFail!")
         motionsets = []
         for step in steps:
-            motionsets.append(MotionSet(self.parsexml(step.attrib['main']),speed=float(step.attrib['mainSpeed']),exclude=exclude,offsets=[]))
+            motionsets.append(MotionSet(self.parsexml(step.attrib['main']),speed=float(step.attrib['mainSpeed']),exclude=exclude,offsets=offsets))
 
         return motionsets
 
@@ -241,9 +241,12 @@ class Head():
 
 
 
+
 #----------------------------------------------------------------------------------------------------------------
 darwin = {1: 90, 2: -90, 3: 67.5, 4: -67.5, 7: 45, 8: -45, 9: 'i', 10: 'i', 13: 'i', 14: 'i', 17: 'i', 18: 'i'}
+dance_hand = {5:'i',6:'i'}
 tree = XmlTree('data.xml')
+dancetree = XmlTree('dance.mtnx')
 balance = MotionSet(tree.parsexml("152 Balance"), offsets=[darwin])
 kick = MotionSet(tree.parsexml("18 L kick"),speed=2,offsets=[darwin])
 w1 = MotionSet(tree.parsexml("32 F_S_L"),speed=2.1,offsets=[darwin])
@@ -254,6 +257,16 @@ w5 = MotionSet(tree.parsexml("36 F_M_L"),speed=2.7,offsets=[darwin])
 w6 = MotionSet(tree.parsexml("37 "),speed=2.1,offsets=[darwin])
 walk_init = Action([w1,w2])
 walk_motion = Action([w3,w4,w5,w6])
+
+units = ['1 Start','2 Stand','3 Step 1 a','4 Step 1 b','5 Step 1 c','6 Step 2 a','3 Step 1 a','4 Step 1 b','5 Step 1 c','6 Step 2 a','8 Step 3-1',
+         '10 Step 4 a','7 Step 3-2','10 Step 4 a','7 Step 3 a','10 Step 4 a']
+action_list = []
+
+for u in units:
+    _u = MotionSet(dancetree.parsexml(u), speed=1, offsets=[darwin,dance_hand])
+    action_list.append(_u)
+
+dance = Action(action_list)
 #------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -261,10 +274,9 @@ if __name__ == '__main__':
     state = dxl.getPos()
     print state
     raw_input()
-    head = Head(dxl)
-    head.tilt_up(30)
-    head.tilt_down(30)
-    print state
+    balance.execute()
+    raw_input()
+    dance.execute()
 
 
 
